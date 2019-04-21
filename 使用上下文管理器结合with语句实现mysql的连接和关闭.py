@@ -32,7 +32,9 @@ class MysqlConn(object):
 if __name__ == '__main__':
     with MysqlConn('192.168.100.100', 3306, 'root', 'mysql', 'stock_db', 'utf8') as conn:
         cursor = conn.cursor()
-        sql = 'select * from info;'
+#        sql = 'select * from info;'
+#        sql = 'select * from focus;'
+        sql = 'select i.id,i.code,i.short,i.chg,i.turnover,i.price,i.time,f.info_id from info as i inner join focus as f where i.id = f.info_id;'
         cursor.execute(sql)
         for row in cursor.fetchall():
             print(row)
