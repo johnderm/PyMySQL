@@ -48,7 +48,8 @@ if __name__ == '__main__':
 #-- 切换数据库
 #use stock_db;
 #-- 执行sql文件
-#source stock_db.sql;
+#source stock_db.sql;如果想导入这个stock_db.sql文件需要在文件的目录下通过mysql -uroot -p连接数据库这样就能确保source导入的
+#sql文件就在当目录
 #stock_db.sql文件放到项目里自行下载
 #
 #
