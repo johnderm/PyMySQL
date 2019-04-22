@@ -1,0 +1,63 @@
+#自定义一个类通过__enter__()和__exit__()方法
+# 结合 with语句完成连接和断开数据库的操作
+import pymysql
+
+class MysqlConn(object):
+
+
+    def __init__(self, host, port, user, password, database, charset):
+        self.host = host
+        self.port = port
+        self.user = user
+        self.password = password
+        self.database = database
+        self.charset = charset
+
+    def __enter__(self):
+        print('开始执行__enter__()方法')
+        self.conn = pymysql.connect(host = self.host,
+                                    port = self.port,
+                                    user = self.user,
+                                    password = self.password,
+                                    database = self.database,
+                                    charset = self.charset
+        )
+        return self.conn
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        print('开始执行__exit()__方法')
+        self.conn.close()
+
+
+if __name__ == '__main__':
+    with MysqlConn('192.168.100.100', 3306, 'root', 'mysql', 'stock_db', 'utf8') as conn:
+        cursor = conn.cursor()
+#        sql = 'select * from info;'
+#        sql = 'select * from focus;'
+        sql = 'select i.id,i.code,i.short,i.chg,i.turnover,i.price,i.time,f.info_id from info as i inner join focus as f where i.id = f.info_id;'
+        cursor.execute(sql)
+        for row in cursor.fetchall():
+            print(row)
+        cursor.close()
+
+
+#使用pycharm执行此段代码，在__init__()方法中初始化类的属性，在__enter__()方法中连接数据库并返回连接，在__exit()__方法中关闭数据库连接
+#执行结果打印如下：
+#需求中的数据库执行代码如下：
+#
+#create database stock_db charset=utf8;
+#-- 切换数据库
+#use stock_db;
+#-- 执行sql文件
+#source stock_db.sql;
+#stock_db.sql文件放到项目里自行下载
+#
+#
+#
+#开始执行__enter__()方法
+#(1, '000007', '全新好', '10.01%', '4.40%', Decimal('16.05'), datetime.date(2017, 7, 18), 1)
+#(36, '300268', '万福生科', '-10.00%', '0.27%', Decimal('31.77'), datetime.date(2017, 4, 10), 36)
+#(37, '300280', '南通锻压', '3.31%', '0.66%', Decimal('32.20'), datetime.date(2017, 4, 11), 37)
+#(88, '601678', '滨化股份', '0.13%', '2.47%', Decimal('7.92'), datetime.date(2017, 7, 20), 88)
+#(89, '601918', '新集能源', '1.23%', '3.11%', Decimal('4.93'), datetime.date(2017, 7, 19), 89)
+#开始执行__exit()__方法
